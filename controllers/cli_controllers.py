@@ -33,4 +33,6 @@ def seed_tables():
 @db_commands.cli.command("drop")
 def drop_tables():
     db.drop_all()
-    print("Tables droppped.")
+    print("Tables droppped.") 
+
+    
