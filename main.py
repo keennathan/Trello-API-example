@@ -3,7 +3,7 @@ from flask import Flask
 
 from init import db, ma, bcrypt, jwt
 from controllers.cli_controllers import db_commands
-from controllers.auth_controller import auth_commands
+from controllers.auth_controller import auth_bp
 
 
 def create_app():
