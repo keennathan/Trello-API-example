@@ -4,6 +4,7 @@ from flask import Blueprint
 from init import db, bcrypt
 from models.user import User
 from models.card import Card
+from models.comment import Comment
 
 db_commands = Blueprint("db", __name__)
 
@@ -18,14 +19,16 @@ def seed_tables():
     users = [
         User(
             email = "admin@email.com",
-            password = bcrypt.generate_password_hash("123456").decode("utf-8"), is_admin = True
+            password = bcrypt.generate_password_hash("123456").decode("utf-8"),
+            is_admin = True
         ), 
         User(
             name = "User A",
             email = "usera@email.com",
-            password = bcrypt.generate_password_hash("123456").decode("utf-8") 
-        )]
-    
+            password = bcrypt.generate_password_hash("123456").decode("utf-8")
+        )
+    ]
+
     db.session.add_all(users)
 
     cards = [
@@ -52,17 +55,14 @@ def seed_tables():
             date = date.today(),
             user = users[1]
         )]
-    
+
     db.session.add_all(cards)
 
     db.session.commit()
 
     print("Tables seeded!")
 
-
 @db_commands.cli.command("drop")
 def drop_tables():
     db.drop_all()
-    print("Tables droppped.") 
-
-    
+    print("Tables droppped.")

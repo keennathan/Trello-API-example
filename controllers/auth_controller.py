@@ -27,16 +27,14 @@ def register_user():
         db.session.commit()
         # Return acknowledgement
         return user_schema.dump(user), 201
-    
     except IntegrityError as err:
-        # not null violation
         if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
-           return {"error": f"The column {err.orig.diag.column_name} is required"}, 400
-        # unique violation    
+            return {"error": f"The column {err.orig.diag.column_name} is required"}, 400
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
+            # unique violation
             return {"error": "Email address must be unique"}, 400
-            
-@auth_bp.route("/login", methods=["Post"])
+
+@auth_bp.route("/login", methods=["POST"])
 def login_user():
     # Get the data from the body of the request
     body_data = request.get_json()
@@ -46,7 +44,7 @@ def login_user():
     # If user exists and pw is correct
     if user and bcrypt.check_password_hash(user.password, body_data.get("password")):
         # create JWT
-        token = create_access_token(identity=str(user.id), expires_delta=timedelta(days=1)) 
+        token = create_access_token(identity=str(user.id), expires_delta=timedelta(days=1))
         # Respond back
         return {"email": user.email, "is_admin": user.is_admin, "token": token}
     # Else
