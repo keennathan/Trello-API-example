@@ -13,7 +13,7 @@ comments_bp = Blueprint("comments", __name__, url_prefix="/<int:card_id>/comment
 
 #Create comment route
 @comments_bp.route("/", methods=["POST"])
-@comments_bp.route("/", methods=["POST"])
+@jwt_required()
 def create_comment(card_id):
     # get the comment message from the request body
     body_data = request.get_json()
@@ -27,7 +27,6 @@ def create_comment(card_id):
             message = body_data.get("message"),
             date = date.today(),
             card = card,
-            card_id = card_id,
             user_id = get_jwt_identity()
         )
         # add and commit the session
@@ -58,6 +57,7 @@ def delete_comment(card_id, comment_id):
     else:
         # return error message
         return {"error": f"Comment with id {comment_id} not found"}, 404
+
 
 # Update comment: /cards/card_id/comments/comment_id
 @comments_bp.route("/<int:comment_id>", methods=["PUT", "PATCH"])
